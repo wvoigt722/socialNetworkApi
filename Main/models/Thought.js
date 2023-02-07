@@ -1,13 +1,13 @@
-const { Schema, Types } = require("mongoose");
+const { Schema } = require("mongoose");
 const reactionSchema = require("./Reaction");
+
+// const dateFormat = function () {
+
+// }
 
 const thoughtSchema = new Schema(
   {
-    thoughtId: {
-      type: Schema.Types.ObjectId,
-      default: () => new Types.ObjectId(),
-    },
-    assignmentName: {
+    thoughtText: {
       type: String,
       required: true,
       maxlength: 280,
@@ -17,11 +17,11 @@ const thoughtSchema = new Schema(
       type: Date,
       default: Date.now,
       // Use a getter method to format the timestamp on query
+      // get: timestamp => dateFormat(timestamp)
     },
     userName: {
-      type: String,
-      required: true,
-      // The user that created this thought. Do we reference here?
+      type: Schema.Types.ObjectId,
+      ref: "thought",
     },
     reactions: [reactionSchema],
     // these are like replies to comments
@@ -34,6 +34,13 @@ const thoughtSchema = new Schema(
     id: false,
   }
 );
+
+thoughtSchema
+  .virtual("reactionCount")
+  // Getter
+  .get(function () {
+    return this.reactions.length;
+  });
 
 const Thought = model("thought", thoughtSchema);
 

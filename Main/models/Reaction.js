@@ -12,9 +12,8 @@ const reactionSchema = new Schema(
       maxlength: 280,
     },
     userName: {
-      type: String,
-      required: true,
-      // The user that created this thought. Do we reference here?
+      type: Schema.Types.ObjectId,
+      ref: "thought",
     },
     createdAt: {
       type: Date,

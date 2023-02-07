@@ -1,19 +1,17 @@
 const { Schema, Types } = require("mongoose");
 
+let validateEmail = function (email) {
+  let re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  return re.test(email);
+};
+
 const userSchema = new Schema(
   {
-    userId: {
-      type: Schema.Types.ObjectId,
-      default: () => new Types.ObjectId(),
-    },
     userName: {
       type: String,
       unique: true,
       required: true,
       trim: true,
-      maxlength: 50,
-      minlength: 4,
-      default: "Insert Username",
     },
     email: {
       type: String,
@@ -27,10 +25,6 @@ const userSchema = new Schema(
         "Please fill a valid email address",
       ],
     },
-
-    // var validateEmail = function(email) {
-    //var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    //return re.test(email)
 
     thoughts: [
       {

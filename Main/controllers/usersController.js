@@ -1,4 +1,3 @@
-const { ObjectId } = require("mongoose").Types;
 const { Thoughts } = require("../models");
 
 module.exports = {
@@ -75,10 +74,31 @@ module.exports = {
   // Friends
 
   createFriend(req, res) {
-    // do we create a friend here or do we update a user and create a friend that way?
+    // do we create a friend here or do we update a user and create a friend that way
+    User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $set: req.params.friendId }
+    )
+      .then((user) =>
+        !user
+          ? res.status(404).json({ message: "No user with this id!" })
+          : res.json(user)
+      )
+      .catch((err) => res.status(500).json(err));
   },
 
   deleteFriend(req, res) {
-    // do we delete the friend we create or delete a part of the user??
+    User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $pull: { friends: req.params.friendId } },
+      { new: true }
+    )
+      .then((res) => {
+        res.json(res);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json(err);
+      });
   },
 };
