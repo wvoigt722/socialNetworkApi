@@ -1,4 +1,4 @@
-const { Thoughts } = require("../models");
+const { User, Thought } = require("../models");
 
 module.exports = {
   getUsers(req, res) {
@@ -42,11 +42,7 @@ module.exports = {
       .then((user) =>
         !user
           ? res.status(404).json({ message: "No such user exists" })
-          : Thought.findOneAndUpdate(
-              { user: req.params.userId },
-              { $pull: { user: req.params.userId } },
-              { new: true }
-            )
+          : Thought.deleteMany({ _id: { $in: user.thoughts } })
       )
       .then((thought) =>
         !thought
@@ -74,10 +70,13 @@ module.exports = {
   // Friends
 
   createFriend(req, res) {
+    console.log(req.params.userId);
+    console.log(req.params.friendId);
     // do we create a friend here or do we update a user and create a friend that way
     User.findOneAndUpdate(
       { _id: req.params.userId },
-      { $set: req.params.friendId }
+      { $addToSet: { friends: req.params.friendId } },
+      { new: true }
     )
       .then((user) =>
         !user
@@ -93,8 +92,8 @@ module.exports = {
       { $pull: { friends: req.params.friendId } },
       { new: true }
     )
-      .then((res) => {
-        res.json(res);
+      .then((data) => {
+        res.json(data);
       })
       .catch((err) => {
         console.log(err);

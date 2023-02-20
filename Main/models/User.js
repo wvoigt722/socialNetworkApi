@@ -1,4 +1,4 @@
-const { Schema, Types } = require("mongoose");
+const { model, Schema } = require("mongoose");
 
 let validateEmail = function (email) {
   let re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -47,6 +47,6 @@ const userSchema = new Schema(
   }
 );
 
-const User = model("user", userSchema);
+const User = model("User", userSchema);
 
 module.exports = User;
